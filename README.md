@@ -1,66 +1,160 @@
-🚀 Como Usar
-1. Preparação da Planilha de Entrada
-O script espera um arquivo Excel chamado caminhoes.xlsx (com uma aba chamada Planilha1) no mesmo diretório de execução.
+# Consulta de Tabela FIPE para Veículos
 
-A planilha deve conter obrigatoriamente as seguintes colunas:
+Projeto desenvolvido em Python para automatizar a consulta de valores da Tabela FIPE de veículos, utilizando um arquivo Excel como fonte de dados.
 
-fabricante: Nome do fabricante/marca (ex: VOLKSWAGEN, MERCEDES-BENZ).
+A aplicação realiza a consulta dos veículos utilizando o **código FIPE**, tornando a busca mais precisa e permitindo relacionar o veículo ao ano do modelo informado na planilha.
 
-modelo: Nome/descrição do modelo (ex: DELIVERY, ATEGO).
+## Objetivo
 
-ano modelo: Ano do veículo (ex: 2018, 2021).
+O projeto foi desenvolvido com o objetivo de facilitar e automatizar o processo de consulta de valores FIPE, reduzindo a necessidade de pesquisas manuais e organizando os resultados diretamente em uma planilha Excel.
 
-Nota: Se o seu arquivo tiver outro nome ou se a aba do Excel for diferente, edite a seguinte linha no script:
+## Como funciona
 
-Python
-df = pd.read_excel('SEU_ARQUIVO.xlsx', sheet_name='SuaAba')
-2. Execução
-Execute o script diretamente pelo terminal ou em um ambiente Jupyter / Google Colab:
+O programa utiliza um arquivo Excel contendo informações dos veículos, como:
 
-Bash
-python consulta_fipe.py
-3. Resultado
-Após a conclusão do processo, o script criará o arquivo caminhoes_com_fipe.xlsx contendo todas as colunas originais acrescidas da coluna Preço FIPE.
+* Modelo
+* Fabricante
+* Ano do modelo
+* Código FIPE
 
-⚙️ Estrutura do Fluxo da API
-Obter Marcas: Busca a lista de marcas cadastradas no segmento de caminhões na FIPE.
+A partir do código FIPE informado, o sistema:
 
-Obter Modelos: Mapeia o ID da marca e pesquisa os modelos disponíveis.
+1. Lê os dados do arquivo Excel.
+2. Identifica o código FIPE de cada veículo.
+3. Consulta os anos disponíveis para o código informado.
+4. Localiza o ano correspondente ao ano do modelo.
+5. Consulta os dados do veículo e seu valor FIPE.
+6. Preenche os resultados na planilha.
+7. Gera um novo arquivo Excel com as informações atualizadas.
 
-Obter Ano: Identifica o código do ano correspondente do modelo.
+## Tecnologias utilizadas
 
-Obter Preço: Retorna o valor atualizado e adiciona ao DataFrame final.
-```bash
-pip install pandas requests openpyxl
-# Consulta Automática de Preços na Tabela FIPE para Frotas
+* Python
+* Pandas
+* Requests
+* OpenPyXL
+* Google Colab
+* Excel
+* API da Tabela FIPE
 
-Este script em Python automatiza a busca e atualização dos preços da Tabela FIPE para listas de veículos contidas em planilhas Excel. Ele elimina a necessidade de pesquisar e preencher manualmente os valores de cada veículo, otimizando o tempo de gestão e análise de frotas.
+## Estrutura dos dados
 
----
+O arquivo de entrada deve conter as seguintes colunas:
 
-## 📌 Funcionalidades
+| Coluna        | Descrição                            |
+| ------------- | ------------------------------------ |
+| `MODELO`      | Modelo do veículo                    |
+| `FABRICANTE`  | Fabricante do veículo                |
+| `ANO MODELO`  | Ano do modelo                        |
+| `CODIGO FIPE` | Código FIPE utilizado na consulta    |
+| `TABELA FIPE` | Coluna destinada ao valor encontrado |
 
-- **Leitura de Dados**: Importa dados de uma planilha Excel (`caminhoes.xlsx`).
-- **Consulta via API**: Integra com a API pública da Tabela FIPE (`parallelum.com.br`) para consultar marcas, modelos e anos.
-- **Mapeamento Flexível**: Realiza busca por correspondência de texto para identificar fabricantes e modelos mesmo com pequenas variações de nome.
-- **Controle de Requisições**: Inclui intervalos de pausa (`time.sleep`) entre as chamadas à API para evitar bloqueios por excesso de requisições.
-- **Exportação de Resultados**: Gera uma nova planilha (`caminhoes_com_fipe.xlsx`) contendo a coluna adicional **Preço FIPE**.
+## Arquivo de entrada
 
----
+O programa utiliza o arquivo:
 
-## 🛠️ Tecnologias e Bibliotecas Utilizadas
+```text
+caminhoes.xlsx
+```
 
-- **Python 3.x**
-- **Pandas**: Para leitura, manipulação e exportação de dados em planilhas Excel.
-- **Requests**: Para envio de requisições HTTP REST à API da Tabela FIPE.
-- **openpyxl**: Biblioteca de suporte ao Pandas para manipulação de arquivos `.xlsx`.
-- **Time**: Módulo nativo do Python usado para controlar os intervalos entre requisições.
+Esse arquivo deve estar disponível no ambiente do Google Colab antes da execução.
 
----
+## Arquivo de saída
 
-## 📋 Pré-requisitos
+Após o processamento, o sistema gera:
 
-Antes de executar o código, certifique-se de instalar as dependências necessárias:
+```text
+resultado_fipe.xlsx
+```
 
-```bash
-pip install pandas requests openpyxl
+Além do valor FIPE, o arquivo de resultado contém informações adicionais sobre a consulta, como:
+
+* Status da consulta
+* Nome oficial do veículo retornado pela API
+* Mês de referência da Tabela FIPE
+* Anos disponíveis para o código FIPE
+
+## Tratamento de erros
+
+O projeto possui um mecanismo de tentativa automática para as requisições à API.
+
+Em caso de falha de conexão ou erro do servidor, o sistema realiza novas tentativas antes de considerar a consulta como falha.
+
+Também são tratados casos como:
+
+* Código FIPE não informado
+* Código FIPE inválido
+* Ano não disponível para o código informado
+* Erro na consulta do preço
+* Falha de conexão com a API
+
+## Execução
+
+### 1. Abra o projeto no Google Colab
+
+Abra o notebook:
+
+```text
+TABELA_FIPE_VEICULOS.ipynb
+```
+
+### 2. Faça o upload do arquivo Excel
+
+O arquivo deve estar disponível no ambiente do Colab com o nome:
+
+```text
+caminhoes.xlsx
+```
+
+### 3. Execute o notebook
+
+O programa realizará as consultas utilizando os códigos FIPE presentes na planilha.
+
+### 4. Resultado
+
+Ao finalizar o processamento, será gerado automaticamente o arquivo:
+
+```text
+resultado_fipe.xlsx
+```
+
+## API
+
+As consultas são realizadas utilizando a API da Tabela FIPE:
+
+```text
+https://fipe.parallelum.com.br/api/v2
+```
+
+O projeto utiliza o endpoint de veículos pesados (`trucks`), com consultas baseadas no código FIPE e no ano do modelo.
+
+## Melhorias realizadas
+
+Uma das principais melhorias desta versão foi a alteração do método de pesquisa.
+
+### Versão anterior
+
+A consulta dependia principalmente das informações de fabricante, modelo e ano para localizar o veículo.
+
+### Versão atual
+
+A aplicação utiliza diretamente o **código FIPE** informado na planilha e, posteriormente, verifica o ano correspondente.
+
+Essa alteração torna o processo de identificação mais preciso e reduz possíveis divergências durante a consulta.
+
+## Possíveis melhorias futuras
+
+Algumas funcionalidades que podem ser adicionadas futuramente:
+
+* Interface gráfica para facilitar a utilização
+* Barra de progresso durante o processamento
+* Validação automática da estrutura do Excel
+* Registro detalhado das consultas realizadas
+* Melhor tratamento de limites de requisições da API
+* Possibilidade de selecionar diferentes tipos de veículos
+
+## Autor
+
+**Marcelo Junior**
+
+Projeto desenvolvido como prática de programação em Python e automação de processos, aplicando conceitos de manipulação de dados, integração com API e processamento de arquivos Excel.
